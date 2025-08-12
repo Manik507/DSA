@@ -3,7 +3,7 @@ public class Transpose {
     public static int[][] transpose(int[][] matrix, int rows, int cols) {
         for(int i=0;i<rows;i++)
         {
-            for(int j=0;j<i;j++) //IT WILL UNTIL THE COLUMNS LESS THAN OF THAT SPECIFIC ROW [DIAGONAL]
+            for(int j=0;j<i;j++) //IT WILL RUN UNTIL THE COLUMNS LESS THAN OF THAT SPECIFIC ROW [DIAGONAL]
             {
                 int temp=matrix[i][j];
                 matrix[i][j] = matrix[j][i];
@@ -36,4 +36,5 @@ public class Transpose {
             System.out.println();
         }    
     }
+
 }
