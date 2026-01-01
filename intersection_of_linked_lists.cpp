@@ -1,0 +1,20 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class Solution {
+  public:
+    Node* intersectPoint(Node* head1, Node* head2) {
+        Node* a = head1;
+        Node* b = head2;
+        while (a != b) {
+            a = a ? a->next : head2;
+            b = b ? b->next : head1;
+        }
+        return a;
+    }
+};
