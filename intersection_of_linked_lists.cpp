@@ -1,7 +1,28 @@
+/*
+------------------------------------------------------------
+Intersection of Two Linked Lists
+------------------------------------------------------------
+Problem:
+Given two singly linked lists, find the node at which they
+intersect. If the linked lists do not intersect, return NULL.
+
+Note:
+- Intersection is determined by reference, not value.
+- After the intersection point, both lists share the same tail.
+
+Approaches:
+1. Brute Force (Commented)
+2. Optimized using Length Difference (Implemented)
+
+Time Complexity (Optimized): O(n + m)
+Space Complexity: O(1)
+------------------------------------------------------------
+*/
+
 #include <iostream>
 using namespace std;
 
-// Definition of Node
+// Definition for singly-linked list node
 struct Node {
     int data;
     Node* next;
@@ -12,106 +33,81 @@ struct Node {
     }
 };
 
-class Solution {
-  public:
-    Node* intersectPoint(Node* head1, Node* head2) {
-        if (head1 == NULL || head2 == NULL)
-            return NULL;
-
-        Node* ptr1 = head1;
-        Node* ptr2 = head2;
-
-        int cnt1 = 0, cnt2 = 0;
-
-        // Count length of first list
-        while (ptr1 != NULL) {
-            cnt1++;
-            ptr1 = ptr1->next;
-        }
-
-        // Count length of second list
-        while (ptr2 != NULL) {
-            cnt2++;
-            ptr2 = ptr2->next;
-        }
-
-        int d = cnt1 - cnt2;
-
-        // Reset pointers
-        ptr1 = head1;
-        ptr2 = head2;
-
-        // Move pointer of longer list
-        if (d > 0) {
-            while (d--) {
-                ptr1 = ptr1->next;
-            }
-        } else {
-            while (d++) {
-                ptr2 = ptr2->next;
-            }
-        }
-
-        // Traverse both lists together
-        while (ptr1 != NULL && ptr2 != NULL) {
-            if (ptr1 == ptr2)
-                return ptr1;
-
-            ptr1 = ptr1->next;
-            ptr2 = ptr2->next;
-        }
-
-        return NULL;
-    }
-};
-
-// Utility function to print linked list
-void printList(Node* head) {
+// Utility function to calculate length of a linked list
+int getLength(Node* head) {
+    int length = 0;
     while (head != NULL) {
-        cout << head->data << " -> ";
+        length++;
         head = head->next;
     }
-    cout << "NULL" << endl;
+    return length;
+}
+
+// Function to find intersection point of two linked lists
+Node* intersectPoint(Node* head1, Node* head2) {
+
+    /*
+    ------------------ BRUTE FORCE APPROACH ------------------
+    Node* t1 = head1;
+    while (t1 != NULL) {
+        Node* t2 = head2;
+        while (t2 != NULL) {
+            if (t1 == t2)
+                return t1;
+            t2 = t2->next;
+        }
+        t1 = t1->next;
+    }
+    return NULL;
+    ----------------------------------------------------------
+    */
+
+    // -------- OPTIMIZED APPROACH (USING LENGTH DIFFERENCE) --------
+    int len1 = getLength(head1);
+    int len2 = getLength(head2);
+
+    int diff = abs(len1 - len2);
+
+    if (len1 > len2) {
+        while (diff--) head1 = head1->next;
+    } else {
+        while (diff--) head2 = head2->next;
+    }
+
+    while (head1 != NULL && head2 != NULL) {
+        if (head1 == head2)
+            return head1;
+        head1 = head1->next;
+        head2 = head2->next;
+    }
+
+    return NULL;
 }
 
 int main() {
-    /*
-        Creating following intersecting lists:
 
-        List1: 1 -> 2 -> 3
-                            -> 6 -> 7 -> NULL
-        List2:       4 -> 5
-    */
-
-    // Common part
+    // Common part of the linked lists
     Node* common = new Node(6);
     common->next = new Node(7);
 
-    // First linked list
+    // First linked list: 1 -> 2 -> 3 -> 6 -> 7
     Node* head1 = new Node(1);
     head1->next = new Node(2);
     head1->next->next = new Node(3);
     head1->next->next->next = common;
 
-    // Second linked list
+    // Second linked list: 4 -> 5 -> 6 -> 7
     Node* head2 = new Node(4);
     head2->next = new Node(5);
     head2->next->next = common;
 
-    cout << "List 1: ";
-    printList(head1);
+    Node* intersection = intersectPoint(head1, head2);
 
-    cout << "List 2: ";
-    printList(head2);
-
-    Solution obj;
-    Node* intersection = obj.intersectPoint(head1, head2);
-
-    if (intersection != NULL) {
-        cout << "Intersection point data: " << intersection->data << endl;
-    } else {
-        cout << "No intersection found." << endl;
-    }
+    if (intersection != NULL)
+        cout << "Intersection at node with data: " 
+             << intersection->data << endl;
+    else
+        cout << "No intersection found" << endl;
 
     return 0;
 }
